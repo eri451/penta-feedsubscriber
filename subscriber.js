@@ -61,5 +61,7 @@ let subscriber = {
             -1
         );
 
+    getFolderId: function getFolderId(){ // FIXME dactyl.option
+        return 3;
+    },
 
-let newLvmkId = services.livemark.createLivemark(root, "TabGroupie commits", services.io.newURI("https://github.com/eri451/TabGroupie/commits/master", null, null), services.io.newURI("https://github.com/eri451/TabGroupie/commits/master.atom", null, null), -1); // and ther you have a livemark
