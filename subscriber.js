@@ -34,14 +34,32 @@ var INFO=
 </plugin>
 
 
+let subscriber = {
 
+    getFeeds: function getFeeds(){
+        let hrefs = []
+        let curBrowser = window.gBrowser.selectedTab.linkedBrowser;
+        if ("feeds" in curBrowser){
+            window.gBrowser.selectedTab.linkedBrowser.feeds.forEach(function (feed, i) {
+                hrefs.push({
+                    "feedhref": feed.href,
+                    "lochref": curBrowser.contentDocument.location.href
+                });
+            });
+        }
+    },
 
-                  let hrefs = []
-                  window.gBrowser.selectedTab.linkedBrowser.feeds.forEach(function (feed, i) hrefs.push(feed.href));
+    subscribe: function subscribe(name, hrefs){
+        let iosvc = services.io;
+        let lvmsvc = services.livemark;  //FIXME do it with the correct services call
 
-
-
-
+        let newLvmId = services.livemark.createLivemark(
+            getFolderId(), //TODO get it from option
+            name,
+            iosvc.newURI(hrefs[lochref],null ,null),
+            iosvc.newURI(hrefs[feedhref], null, null),
+            -1
+        );
 
 
 let newLvmkId = services.livemark.createLivemark(root, "TabGroupie commits", services.io.newURI("https://github.com/eri451/TabGroupie/commits/master", null, null), services.io.newURI("https://github.com/eri451/TabGroupie/commits/master.atom", null, null), -1); // and ther you have a livemark
