@@ -54,13 +54,10 @@ let subscriber = {
 
     getTitle: function getTitle(href){
         let hrefs = subscriber.getFeeds()
-        let title;
-        for (let i = 0; i < hrefs.lenght; i+=1){
+        for (let i = 0; i < hrefs.length; i+=1){
             if (hrefs[i].href === href)
-                title = hrefs[i].title;
+                return hrefs[i].title;
         }
-        return title
-
     },
 
     subscribe: function subscribe(feedhref){
@@ -141,17 +138,21 @@ let subscriber = {
                     "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                     Components.interfaces.nsINavBookmarksService);
 
+            let everything_is_fine = true;
             let res;
             let j = 0;
             let bkms = [];
 
-            while (res != -1){
+            while (everything_is_fine){
                 res = bmsvc.getIdForItemAt(lvmId,j);
-                j += 1;
-                bkms.push({
-                    "href": bmsvc.getBookmarkURI(res).spec,
-                    "name": bmsvc.getItemTitle(res)
-                });
+                if (res != -1){
+                    j += 1;
+                    bkms.push({
+                        "href": bmsvc.getBookmarkURI(res).spec,
+                        "name": bmsvc.getItemTitle(res)
+                    });
+                }
+                else break;
             }
             return bkms;
         },
@@ -159,21 +160,12 @@ let subscriber = {
 
     readafeed: function readafeed(feedtitle){
         let lvms = subscriber.complete.livemarks();
-        let id;
-        for (let i = 0; i < lvms.lenght; i+=1){
-            if (lvms[i].title === "feedtitle"){
-                id = lvms[i].id
-                break;
+        for (let i = 0; i < lvms.length; i+=1){
+            if (lvms[i].title === feedtitle){
+                let id = lvms[i].id
+                return id;
             }
         }
-        let marks = subscriber.complete.itemsOf(id);
-        commandline.input("Which Bookmark?", ex.open,{
-                argCount: "1",
-                completer: function (context){
-                    context.keys = { text: "href", description: "name" }
-                    context.completion = marks;
-                },
-        });
     },
 
     getRootFolderId: function getRootFolderId(){ // FIXME dactyl.option
@@ -185,14 +177,26 @@ let subscriber = {
 group.commands.add(["reada[feed]","rf"],
                     "open a feed to read its items",
                     function (args){
-                        subscriber.readafeed(args[0]);
+                        ex.open(args[1]);
                     },
                     {
-                        argCount: "1",
-                        completer: function (context){
-                            let lvms = subscriber.complete.livemarks();
-                            context.keys = { text: "title", description: "href" };
-                            context.completions = lvms;
+                        argCount: "+",
+                        completer: function (context, args){
+                            switch (args.completeArg) {
+                            case 0:
+                                let lvms = subscriber.complete.livemarks();
+                                context.keys = { text: "title", description: "href" };
+                                context.completions = lvms;
+                                break;
+                            case 1:
+                                let marks =
+                                    subscriber.complete.itemsOf(
+                                        subscriber.readafeed(args[0])
+                                    );
+                                context.keys = { text: "href", description: "name" };
+                                context.completion = marks;
+                                break;
+                            }
                         },
                     });
 
@@ -209,3 +213,5 @@ group.commands.add(["subs[cribeafeed]","sf"],
                             context.completions = hrefs;
                         },
                     });
+
+// TODO delete feeds
