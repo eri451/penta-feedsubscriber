@@ -175,8 +175,29 @@ let subscriber = {
         bmsvc.removeItem(subscriber.readafeed(feedtitle));
     },
 
-    getRootFolderId: function getRootFolderId(){ // FIXME dactyl.option
-        return 5162;
+    getRootFolderId: function getRootFolderId(name){
+        let bmsvc = Components.classes[
+                "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
+                Components.interfaces.nsINavBookmarksService);
+        let k = 0;
+        let res;
+        let bkms = [];
+
+        while(true){
+            res = bmsvc.getIdForItemAt(bmsvc.bookmarksMenuFolder,k);
+            if (res != -1){
+                k += 1;
+                bkms.push({
+                    "name": bmsvc.getItemTitle(res),
+                    "id"  : res
+                });
+            }
+        }
+        for (let n = 0; n < bkms.length; n+=1){
+            if (bkms[n].title === name)
+                return bkms[n].id;
+            else bmsvc.createFolder(bmsvc.bookmarksMenuFolder, name, -1);
+        }
     },
 }
 
@@ -221,7 +242,6 @@ group.commands.add(["subs[cribeafeed]","sf"],
                         },
                     });
 
-// TODO delete feeds
 group.commands.add(["delfeed"],
                     "delete a feed in your pentafeeds folder",
                     function (args){
@@ -234,4 +254,11 @@ group.commands.add(["delfeed"],
                             context.keys = { text: "title", description: "href" };
                             context.completions = lvms;
                         }
+                    });
+
+group.options.add( ["fee[dfolder]","fedf"],  //FIXME I have no idea of options
+                    "Set the penta-feedsubscriber folder",
+                    {
+                        setter: function (args) { getRootFolderId(args[0])},
+                        persist: true
                     });
