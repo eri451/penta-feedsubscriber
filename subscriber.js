@@ -168,6 +168,13 @@ let subscriber = {
         }
     },
 
+    del: function del(feedtitle){
+        let bmsvc = Components.classes[
+                "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
+                Components.interfaces.nsINavBookmarksService);
+        bmsvc.removeItem(subscriber.readafeed(feedtitle));
+    },
+
     getRootFolderId: function getRootFolderId(){ // FIXME dactyl.option
         return 5162;
     },
@@ -215,3 +222,16 @@ group.commands.add(["subs[cribeafeed]","sf"],
                     });
 
 // TODO delete feeds
+group.commands.add(["delfeed"],
+                    "delete a feed in your pentafeeds folder",
+                    function (args){
+                        subscriber.del(args[0]);
+                    },
+                    {
+                        argCount: "1",
+                        completer: function (context){
+                            let lvms = subscriber.complete.livemarks();
+                            context.keys = { text: "title", description: "href" };
+                            context.completions = lvms;
+                        }
+                    });
