@@ -192,12 +192,13 @@ let subscriber = {
                     "id"  : res
                 });
             }
+            else break;
         }
         for (let n = 0; n < bkms.length; n+=1){
             if (bkms[n].title === name)
                 return bkms[n].id;
-            else bmsvc.createFolder(bmsvc.bookmarksMenuFolder, name, -1);
         }
+        return bmsvc.createFolder(bmsvc.bookmarksMenuFolder, name, -1);
     },
 }
 
