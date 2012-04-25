@@ -70,7 +70,6 @@ let subscriber = {
         let loc = window.content.location.href;
 
         let title = subscriber.getTitle(feedhref);
-        alert("Title: "+ title);
         let gotTitle = false;
         if (title === undefined){
             commandline.input("Title: ", userTitle, { argCount: "1"});
@@ -175,7 +174,11 @@ let subscriber = {
         bmsvc.removeItem(subscriber.readafeed(feedtitle));
     },
 
-    getRootFolderId: function getRootFolderId(name){
+    getRootFolderId: function getRootFolderId(){
+        return 5162;
+    },
+
+    createRootFolderId: function crateRootFolderId(name){
         let bmsvc = Components.classes[
                 "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                 Components.interfaces.nsINavBookmarksService);
@@ -223,7 +226,7 @@ group.commands.add(["reada[feed]","rf"],
                                         subscriber.readafeed(args[0])
                                     );
                                 context.keys = { text: "href", description: "name" };
-                                context.completion = marks;
+                                context.completions = marks;
                                 break;
                             }
                         },
@@ -257,9 +260,9 @@ group.commands.add(["delfeed"],
                         }
                     });
 
-group.options.add( ["fee[dfolder]","fedf"],  //FIXME I have no idea of options
-                    "Set the penta-feedsubscriber folder",
-                    {
-                        setter: function (args) { getRootFolderId(args[0])},
-                        persist: true
-                    });
+//group.options.add( ["fee[dfolder]","fedf"],  //FIXME I have no idea of options
+//                    "Set the penta-feedsubscriber folder",
+//                    {
+//                        setter: function (args) { getRootFolderId(args[0])},
+//                        persist: true
+//                    });
