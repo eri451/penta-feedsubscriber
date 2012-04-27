@@ -81,7 +81,7 @@ let subscriber = {
         function userTitle(args){
             if (typeof(args) === "string") title = args;
             let newLvmId = lvmsvc.createLivemark(  // maybe we need the id again
-                subscriber.getRootFolderId(),
+                subscriber.getFeedFolderId(),
                 title,
                 iosvc.newURI(loc, null ,null),
                 iosvc.newURI(feedhref, null, null),
@@ -91,7 +91,7 @@ let subscriber = {
 
         if (gotTitle){
             let newLvmId = lvmsvc.createLivemark(  // maybe we need the id again
-                subscriber.getRootFolderId(),
+                subscriber.getFeedFolderId(),
                 title,
                 iosvc.newURI(loc, null ,null),
                 iosvc.newURI(feedhref, null, null),
@@ -110,7 +110,7 @@ let subscriber = {
                     Components.interfaces.nsINavBookmarksService);
 
             let lvms = [];
-            let ffldr = subscriber.getRootFolderId();
+            let ffldr = subscriber.getFeedFolderId();
 
             for (let i = 0; bmsvc.getIdForItemAt(ffldr,i) != -1; i+=1){
                 let id = bmsvc.getIdForItemAt(ffldr,i);
@@ -161,20 +161,20 @@ let subscriber = {
         bmsvc.removeItem(subscriber.readafeed(feedtitle));
     },
 
-    getRootFolderId: function getRootFolderId(){
-        return 5162;
+    getFeedFolderId: function getFeedFolderId(){
+        return subscriber.setFeedFolder(options.feedfolder);
     },
 
-    createRootFolderId: function crateRootFolderId(name){
+    setFeedFolder: function setFeedFolder(name){
         let bmsvc = Components.classes[
                 "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                 Components.interfaces.nsINavBookmarksService);
 
         let bkms = [];
-        let bmfldr = bmsvc.bookmarksMenuFolder;
+        let bkmMfldr = bmsvc.bookmarksMenuFolder;
 
-        for (let k = 0; bmsvc.getIdForItemAt(bmfldr,k) != -1; k+=1){
-            let id = bmsvc.getIdForItemAt(bmfldr,k);
+        for (let k = 0; bmsvc.getIdForItemAt(bkmMfldr,k) != -1; k+=1){
+            let id = bmsvc.getIdForItemAt(bkmMfldr,k);
             bkms.push({
                 "name": bmsvc.getItemTitle(id),
                 "id"  : id
@@ -251,11 +251,14 @@ group.commands.add(["delfeed"],
                         }
                     });
 
-//group.options.add( ["fee[dfolder]","fedf"],  //FIXME I have no idea of options
-//                    "Set the penta-feedsubscriber folder",
-//                    {
-//                        setter: function (args) { getRootFolderId(args[0])},
-//                        persist: true
-//                    });
+group.options.add( ["feedfolder","ffldr"],  //FIXME I have no idea of options
+                    "Set the penta-feedsubscriber folder",
+                    "string","pentafeeds",
+                    {
+                        setter: function (value) {
+                                    subscriber.setFeedFolder(value);
+                                    return value },
+                        persist: true
+                    });
 
-//TODO reloadFeeds, tidyup
+//TODO rename feeds
