@@ -193,6 +193,15 @@ let subscriber = {
                 Components.interfaces.nsILivemarkService);
         lvmsvc.reloadLivemarkFolder(id);
     },
+
+    rename: function rename(feed, newtitle){
+        let bmsvc = Components.classes[
+                "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
+                Components.interfaces.nsINavBookmarksService);
+
+        let id = subscriber.readafeed(feed);
+        bmsvc.setItemTitle(id,newtitle);
+    },
 }
 
 
@@ -220,11 +229,11 @@ group.commands.add(["reada[feed]","rf"],
                                 context.completions = marks;
                                 break;
                             }
-                        },
+                        },  // FIXME sort Elements by time
                     });
 
 group.commands.add(["subs[cribeafeed]","sf"],
-                    "subscribe a feed",
+                    "subscribe to a feed",
                     function (args){
                         subscriber.subscribe(args[0]);
                     },
@@ -251,6 +260,21 @@ group.commands.add(["delfeed"],
                         }
                     });
 
+group.commands.add(["nameafeed","nf"],
+                    "rename a feed",
+                    function (args){
+                        subscriber.rename(args[0],args[1]);
+                    },
+                    {
+                        argCount: "+",
+                        completer: function (context){
+                            let lvms = subscriber.complete.livemarks();
+                            context.keys = { text: "title", description: "href" };
+                            context.completions = lvms;
+                        }
+                    });
+
+
 group.options.add( ["feedfolder","ffldr"],  //FIXME I have no idea of options
                     "Set the penta-feedsubscriber folder",
                     "string","pentafeeds",
@@ -260,5 +284,3 @@ group.options.add( ["feedfolder","ffldr"],  //FIXME I have no idea of options
                                     return value },
                         persist: true
                     });
-
-//TODO rename feeds
