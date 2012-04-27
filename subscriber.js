@@ -1,9 +1,9 @@
 XML.ignoreWhitespace = false;
 XML.prettyPrinting   = false;
 var INFO=
-<plugin  name="Penta-Feedsubscriber" version="0.7"
+<plugin  name="Pentadactyl Feedsubscriber" version="0.7"
          href="http://github.com/eri451"
-         summary="Feedsubscribe-plugin"
+         summary="Feedsubscriber-plugin"
         xmlns={NS}>
 
     <author email="hans.orter@gmx.de">Eri!</author>
