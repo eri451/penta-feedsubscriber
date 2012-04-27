@@ -1,7 +1,7 @@
 XML.ignoreWhitespace = false;
 XML.prettyPrinting   = false;
 var INFO=
-<plugin  name="Penta-Feedsubscriber" version="0.0a"
+<plugin  name="Penta-Feedsubscriber" version="0.7"
          href="http://github.com/eri451"
          summary="Feedsubscribe-plugin"
         xmlns={NS}>
@@ -13,22 +13,40 @@ var INFO=
         This plugin shall help you subscriging and reading Feeds.
     </p>
     <item>
-        <tags>:fs :feed-subscribe</tags>
-        <spec>:subscribe <oa>aFeed</oa></spec>
+        <tags>:sf :subscribeafeed</tags>
+        <spec>:subscribeafeed <oa>aFeed</oa></spec>
         <description>
-            Suscribes the feed via the livemark service
+            Suscribes the feed via the livemark service.
         </description>
     </item>
     <item>
-        <tags>:fo :feed-open</tags>
-        <spec>:read-open <oa>aFeed</oa></spec>
+        <tags>:rf :readafeed</tags>
+        <spec>:readafeed <oa>aFeed</oa><oa>aBookmark</oa></spec>
         <description>
-            <p>
-                Shows all the entries of the spectified feed
-            </p>
-            <p>
-                select one with <oa>Tab</oa> and open it with the wellknown open shotcuts.
-            </p>
+            Opens a livemark bookmark.
+        </description>
+    </item>
+    <item>
+        <tags>:nf :nameafeed</tags>
+        <spec>:nameafeed <oa>aFeed</oa><oa>aNewName</oa></spec>
+        <description>
+            Rename a feed.
+        </description>
+    </item>
+    <item>
+        <tags>:delafeed</tags>
+        <spec>:delafeed <oa>aFeed</oa></spec>
+        <description>
+            Delete a feed.
+        </description>
+    </item>
+    <item>
+        <tags>'ffldr' 'feedfolder'</tags>
+        <spec>'feedfolder'</spec>
+        <type>string</type>
+        <default>pentafeeds</default>
+        <description>
+            <p>The name of the folder, where your feeds will be saved.</p>
         </description>
     </item>
 </plugin>
@@ -246,7 +264,7 @@ group.commands.add(["subs[cribeafeed]","sf"],
                         },
                     });
 
-group.commands.add(["delfeed"],
+group.commands.add(["delafeed"],
                     "delete a feed in your pentafeeds folder",
                     function (args){
                         subscriber.del(args[0]);
@@ -260,7 +278,7 @@ group.commands.add(["delfeed"],
                         }
                     });
 
-group.commands.add(["nameafeed","nf"],
+group.commands.add(["name[afeed]","nf"],
                     "rename a feed",
                     function (args){
                         subscriber.rename(args[0],args[1]);
