@@ -109,22 +109,16 @@ let subscriber = {
                     "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                     Components.interfaces.nsINavBookmarksService);
 
-            let res;
-            let everything_is_fine = true;
-            let i = 0;
             let lvms = [];
+            let ffldr = subscriber.getRootFolderId();
 
-            while (everything_is_fine){
-                res = bmsvc.getIdForItemAt(subscriber.getRootFolderId(),i);
-                if (res != -1){
-                    i += 1;
-                    lvms.push({
-                        "title": bmsvc.getItemTitle(res),
-                        "href" : lvmsvc.getFeedURI(res).spec,
-                        "id"   : res
-                    });
-                }
-                else break;
+            for (let i = 0; bmsvc.getIdForItemAt(ffldr,i) != -1; i+=1){
+                let id = bmsvc.getIdForItemAt(ffldr,i);
+                lvms.push({
+                    "title": bmsvc.getItemTitle(id),
+                    "href" : lvmsvc.getFeedURI(id).spec,
+                    "id"   : id
+                });
             }
             return lvms;
         },
@@ -137,24 +131,17 @@ let subscriber = {
                     "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                     Components.interfaces.nsINavBookmarksService);
 
-            let everything_is_fine = true;
-            let res;
-            let j = 0;
             let bkms = [];
 
-            while (everything_is_fine){
-                res = bmsvc.getIdForItemAt(lvmId,j);
-                if (res != -1){
-                    j += 1;
-                    bkms.push({
-                        "href": bmsvc.getBookmarkURI(res).spec,
-                        "name": bmsvc.getItemTitle(res)
-                    });
-                }
-                else break;
+            for (let j = 0 ; bmsvc.getIdForItemAt(lvmId,j) != -1; j+=1){
+                let id = bmsvc.getIdForItemAt(lvmId,j);
+                bkms.push({
+                    "href": bmsvc.getBookmarkURI(id).spec,
+                    "name": bmsvc.getItemTitle(id)
+                });
             }
             return bkms;
-        },
+        }
     },
 
     readafeed: function readafeed(feedtitle){
@@ -182,23 +169,19 @@ let subscriber = {
         let bmsvc = Components.classes[
                 "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                 Components.interfaces.nsINavBookmarksService);
-        let k = 0;
-        let res;
-        let bkms = [];
 
-        while(true){
-            res = bmsvc.getIdForItemAt(bmsvc.bookmarksMenuFolder,k);
-            if (res != -1){
-                k += 1;
-                bkms.push({
-                    "name": bmsvc.getItemTitle(res),
-                    "id"  : res
-                });
-            }
-            else break;
+        let bkms = [];
+        let bmfldr = bmsvc.bookmarksMenuFolder;
+
+        for (let k = 0; bmsvc.getIdForItemAt(bmfldr,k) != -1; k+=1){
+            let id = bmsvc.getIdForItemAt(bmfldr,k);
+            bkms.push({
+                "name": bmsvc.getItemTitle(id),
+                "id"  : id
+            });
         }
         for (let n = 0; n < bkms.length; n+=1){
-            if (bkms[n].title === name)
+            if (bkms[n].name === name)
                 return bkms[n].id;
         }
         return bmsvc.createFolder(bmsvc.bookmarksMenuFolder, name, -1);
@@ -266,3 +249,5 @@ group.commands.add(["delfeed"],
 //                        setter: function (args) { getRootFolderId(args[0])},
 //                        persist: true
 //                    });
+
+//TODO reloadFeeds, tidyup
