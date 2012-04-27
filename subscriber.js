@@ -3,7 +3,7 @@ XML.prettyPrinting   = false;
 var INFO=
 <plugin  name="Pentadactyl Feedsubscriber" version="0.7"
          href="http://github.com/eri451"
-         summary="Feedsubscriber-plugin"
+         summary="Pentadactyl Feed Manager"
         xmlns={NS}>
 
     <author email="hans.orter@gmx.de">Eri!</author>
