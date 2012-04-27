@@ -186,6 +186,13 @@ let subscriber = {
         }
         return bmsvc.createFolder(bmsvc.bookmarksMenuFolder, name, -1);
     },
+
+    update: function update(id){
+        let lvmsvc = Components.classes[
+                "@mozilla.org/browser/livemark-service;2"].getService(
+                Components.interfaces.nsILivemarkService);
+        lvmsvc.reloadLivemarkFolder(id);
+    },
 }
 
 
@@ -204,6 +211,7 @@ group.commands.add(["reada[feed]","rf"],
                                 context.completions = lvms;
                                 break;
                             case 1:
+                                subscriber.update(subscriber.readafeed(args[0]));
                                 let marks =
                                     subscriber.complete.itemsOf(
                                         subscriber.readafeed(args[0])
