@@ -57,7 +57,7 @@ let subscriber = {
     getFeeds: function getFeeds(){
         let hrefs = [];
         let curBrowser = window.gBrowser.selectedTab.linkedBrowser;
-        if ("feeds" in curBrowser){
+        if ("feeds" in curBrowser || curBrowser.feeds != null){
             curBrowser.feeds.forEach( function (feed, i) {
                 hrefs.push({
                     "href" : feed.href,
@@ -88,7 +88,7 @@ let subscriber = {
             let loc = window.content.location.href;
 
             let title = subscriber.getTitle(feedhref);
-            if (!options.feedtitle){
+            if (options.feedtitle === "auto"){
                 if (title === undefined || title === ""){
                     commandline.input("Title: ", createFeed, { argCount: "+"});
                 }
@@ -304,9 +304,15 @@ group.options.add( ['feedfolder','ffldr'],  //FIXME I have no idea of options
                     });
 
 group.options.add( ['feedtitle','fttle'],
-                    "always ask me if I want change the Title",
-                    "boolean",true,
+                    "ask me if I want change the Title",
+                    "string",'ask',
                     {
-                        setter: function (value){ return value },
+                        setter: function (value){
+                                    if ( value === "ask" ||
+                                         value === "auto") return value;
+                                    else dactyl.echoerr(
+                                      "This Value: \'" + value + "\' is invalid."
+                                      + "\nUse ask or auto!");
+                                },
                         persist: true
                     });
