@@ -79,21 +79,24 @@ let subscriber = {
     },
 
     subscribe: function subscribe(feedhref){
-        let lvmsvc = Components.classes[
-                "@mozilla.org/browser/livemark-service;2"].getService(
-                Components.interfaces.nsILivemarkService);
-        let iosvc = Components.classes[
-                "@mozilla.org/network/io-service;1"].getService(
-                Components.interfaces.nsIIOService);
-        let loc = window.content.location.href;
+            let lvmsvc = Components.classes[
+                    "@mozilla.org/browser/livemark-service;2"].getService(
+                    Components.interfaces.nsILivemarkService);
+            let iosvc = Components.classes[
+                    "@mozilla.org/network/io-service;1"].getService(
+                    Components.interfaces.nsIIOService);
+            let loc = window.content.location.href;
 
-        let title = subscriber.getTitle(feedhref);
-        if (title === undefined || title === ""){
-            commandline.input("Title: ", createFeed, { argCount: "1"});
-        }
-        else{
-            createFeed(title)
-        }
+            let title = subscriber.getTitle(feedhref);
+            if (!options.feedtitle){
+                if (title === undefined || title === ""){
+                    commandline.input("Title: ", createFeed, { argCount: "+"});
+                }
+                else createFeed(title);
+            }
+            else commandline.input("Change title \'" + title + "\'? [y,N]",
+                                  getTitleFromUser,
+                                  { argCount: "1" });
 
         function createFeed(args){
             if (typeof(args) === "string") title = args;
@@ -104,6 +107,15 @@ let subscriber = {
                 iosvc.newURI(feedhref, null, null),
                 -1
             );
+        }
+
+        function getTitleFromUser(arg){
+            arg = ("" + (arg || "")).toLowerCase();
+            if (arg.length === 0 || arg === "n" || arg === "y"){
+                    if (arg !== "y") createFeed(title);
+                    else
+                        commandline.input("Title: ",createFeed,{argCount: "+"});
+            }
         }
     },
 
@@ -172,7 +184,7 @@ let subscriber = {
         return subscriber.setFeedFolder(options.feedfolder);
     },
 
-    setFeedFolder: function setFeedFolder(name){
+    setFeedFolder: function setFeedFolder(name){ // FIXME make me clean
         let bmsvc = Components.classes[
                 "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                 Components.interfaces.nsINavBookmarksService);
@@ -281,13 +293,20 @@ group.commands.add(["name[afeed]","nf"],
                         }
                     });
 
-
-group.options.add( ["feedfolder","ffldr"],  //FIXME I have no idea of options
+group.options.add( ['feedfolder','ffldr'],  //FIXME I have no idea of options
                     "Set the penta-feedsubscriber folder",
                     "string","pentafeeds",
                     {
-                        setter: function (value) {
+                        setter: function (value){
                                     subscriber.setFeedFolder(value);
                                     return value },
+                        persist: true
+                    });
+
+group.options.add( ['feedtitle','fttle'],
+                    "always ask me if I want change the Title",
+                    "boolean",true,
+                    {
+                        setter: function (value){ return value },
                         persist: true
                     });
