@@ -1,7 +1,7 @@
 XML.ignoreWhitespace = false;
 XML.prettyPrinting   = false;
 var INFO=
-<plugin  name="Pentadactyl Feedsubscriber" version="0.7"
+<plugin  name="penta-feedsubscriber" version="0.7"
          href="http://github.com/eri451/penta-feedsubcriber"
          summary="Pentadactyl Feed Manager"
         xmlns={NS}>
@@ -88,27 +88,16 @@ let subscriber = {
         let loc = window.content.location.href;
 
         let title = subscriber.getTitle(feedhref);
-        let gotTitle = false;
-        if (title === undefined){
-            commandline.input("Title: ", userTitle, { argCount: "1"});
+        if (title === undefined || title === ""){
+            commandline.input("Title: ", createFeed, { argCount: "1"});
         }
         else{
-            gotTitle = true;
+            createFeed(title)
         }
 
-        function userTitle(args){
+        function createFeed(args){
             if (typeof(args) === "string") title = args;
-            let newLvmId = lvmsvc.createLivemark(  // maybe we need the id again
-                subscriber.getFeedFolderId(),
-                title,
-                iosvc.newURI(loc, null ,null),
-                iosvc.newURI(feedhref, null, null),
-                -1
-            );
-        }
-
-        if (gotTitle){
-            let newLvmId = lvmsvc.createLivemark(  // maybe we need the id again
+            lvmsvc.createLivemark(
                 subscriber.getFeedFolderId(),
                 title,
                 iosvc.newURI(loc, null ,null),
