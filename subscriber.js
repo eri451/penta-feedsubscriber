@@ -151,7 +151,7 @@ let subscriber = {
         }
     },
 
-    readafeed: function readafeed(feedtitle){
+    getIdByTitle: function getIdByTitle(feedtitle){
         let lvms = subscriber.complete.livemarks();
         for (let i = 0; i < lvms.length; i+=1){
             if (lvms[i].title === feedtitle){
@@ -165,7 +165,7 @@ let subscriber = {
         let bmsvc = Components.classes[
                 "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                 Components.interfaces.nsINavBookmarksService);
-        bmsvc.removeItem(subscriber.readafeed(feedtitle));
+        bmsvc.removeItem(subscriber.getIdByTitle(feedtitle));
     },
 
     getFeedFolderId: function getFeedFolderId(){
@@ -206,7 +206,7 @@ let subscriber = {
                 "@mozilla.org/browser/nav-bookmarks-service;1"].getService(
                 Components.interfaces.nsINavBookmarksService);
 
-        let id = subscriber.readafeed(feed);
+        let id = subscriber.getIdByTitle(feed);
         bmsvc.setItemTitle(id,newtitle);
     },
 }
@@ -227,10 +227,10 @@ group.commands.add(["reada[feed]","rf"],
                                 context.completions = lvms;
                                 break;
                             case 1:
-                                subscriber.update(subscriber.readafeed(args[0]));
+                                subscriber.update(subscriber.getIdByTitle(args[0]));
                                 let marks =
                                     subscriber.complete.itemsOf(
-                                        subscriber.readafeed(args[0])
+                                        subscriber.getIdByTitle(args[0])
                                     );
                                 context.keys = { text: "href", description: "name" };
                                 context.completions = marks;
