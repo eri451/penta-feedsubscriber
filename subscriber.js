@@ -49,6 +49,22 @@ var INFO=
             <p>The name of the folder, where your feeds will be saved.</p>
         </description>
     </item>
+    <item>
+        <tags>'fttle' 'feedtitle'</tags>
+        <spec>'feedtitle'</spec>
+        <type>string</type>
+        <default>ask</default>
+        <description>
+            <p>
+                Sets the handle of feed titles.
+            </p>
+            <dl>
+                <dt>ask</dt>    <dd>Ask the user if he wants to change the
+                                    preset title.</dd>
+                <dt>auto</dt>   <dd>Use the preset title if available.</dd>
+            </dl>
+        </description>
+    </item>
 </plugin>
 
 
