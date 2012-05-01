@@ -1,0 +1,35 @@
+Pentadactyl Feed ManagerPlugin                              penta-feedsubscriber
+
+                                                            Version: 0.7
+                                                            Author:  Eri! 
+                                                            License: MIT
+    
+    
+This plugin shall help you subscriging and reading Feeds.
+
+:subscribeafeed [aFeed]                                     :sf :subscribeafeed
+        Suscribes the feed via the livemark service.
+    
+
+:readafeed [aFeed][aBookmark]                               :rf :readafeed
+        Opens a livemark bookmark.
+    
+
+:nameafeed [aFeed][aNewName]                                :nf :nameafeed
+        Rename a feed.
+    
+
+:delafeed [aFeed]                                               :delafeed
+        Delete a feed.
+    
+
+'feedfolder'    string  (default: pentafeeds)               'ffldr' 'feedfolder'
+        The name of the folder, where your feeds will be saved.
+    
+
+'feedtitle'     string  (default: ask)                      'fttle' 'feedtitle'
+        
+        Sets the handle of feed titles.
+        
+            ask         Ask the user if he wants to change the preset title.
+            auto        Use the preset title if available.
